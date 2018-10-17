@@ -334,7 +334,6 @@ const (
 type InputMedia struct {
 	Type              InputMediaType `json:"type"`
 	Media             string         `json:"media"`
-	Thumb             InputFile      `json:"thumb,omitempty"` // video, animation, audio, document
 	Caption           string         `json:"caption,omitempty"`
 	ParseMode         ParseMode      `json:"parse_mode,omitempty"`
 	Width             int            `json:"width,omitempty"`              // video, animation
@@ -343,6 +342,7 @@ type InputMedia struct {
 	Performer         string         `json:"performer,omitempty"`          // audio only
 	Title             string         `json:"title,omitempty"`              // audio only
 	SupportsStreaming bool           `json:"supports_streaming,omitempty"` // video only
+	Bytes		  []byte	 `json:"-"`
 }
 
 // InputFile represents contents of a file to be uploaded.
