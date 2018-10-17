@@ -933,7 +933,6 @@ func checkIfFileParamExists(params map[string]interface{}) bool {
 			if len(value.(InputFile).Bytes) > 0 || value.(InputFile).Filepath != nil {
 				return true
 			}
-		}
 		case InputMedia:
 			if len(value.(InputMedia).Bytes) > 0 {
 				return true
