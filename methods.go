@@ -934,6 +934,11 @@ func checkIfFileParamExists(params map[string]interface{}) bool {
 				return true
 			}
 		}
+		case InputMedia:
+			if len(value.(InputMedia).Bytes) > 0 {
+				return true
+			}
+		}
 	}
 
 	return false
@@ -1082,6 +1087,26 @@ func (b *Bot) request(method string, params map[string]interface{}) (respBytes [
 					}
 				} else {
 					b.error("parameter '%s' could not be cast to InputFile", key)
+				}
+			case InputMedia:
+				if inputMedia, ok := value.(InputMedia); ok {
+					if len(inputMedia.Bytes) > 0 {
+						filename := fmt.Sprintf("%s.%s", key, getExtension(inputMedia.Bytes))
+						var part io.Writer
+						part, err = writer.CreateFormFile("photo", filename)
+						if err == nil {
+							if _, err = io.Copy(part, bytes.NewReader(inputMedia.Bytes)); err != nil {
+								b.error("could not write InputMedia to multipart: %s", key)
+							}
+						} else {
+							b.error("could not create form file for parameter '%s' (InputMedia)", key)
+						}
+						if strValue, ok := b.paramToString(value); ok {
+							writer.WriteField(key, strValue)
+						}
+					}
+				} else {
+					b.error("parameter '%s' could not be cast to InputMedia", key)
 				}
 			default:
 				if strValue, ok := b.paramToString(value); ok {
